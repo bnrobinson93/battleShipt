@@ -1,0 +1,73 @@
+.grid-header {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  letter-spacing: 0.34em;
+}
+
+.grid-row-header {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 20px;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.board-row {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 16px;
+  font-weight: bold;
+  height: 24px;
+  line-height: 24px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 24px;
+}
+
+.ship {
+  background: #ccc;
+  color: #ccc;
+}
+
+.hit {
+  background: red;
+  color: red;
+}
+
+.miss {
+  background: blue;
+  color: blue;
+}
+
+.square:hover {
+  border: 2px solid #000;
+}
+
+.unclickable:focus, .unclickable:hover {
+  border: 1px solid #999; /* same as a normal square */
+  outline: none;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.sidebar {
+  height: 100vh;
+  min-height: 100%;
+}
