@@ -32,6 +32,8 @@ class BattleShipt extends Component {
         posX: null,
         posY: null,
         winner: 0,
+        player: 1,
+        result: null,
       }],
       stepNumber: 0,
     }
@@ -127,6 +129,7 @@ class BattleShipt extends Component {
 
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
+    var result = '';
 
     // If player is one, set to player two's squares and vice versa
     var playerOnesTurn = this.state.playerIsOne;
@@ -136,10 +139,12 @@ class BattleShipt extends Component {
       alert("That square has already been clicked!");
     } else if ( squares[i] === null ) { // if empty
       console.log('Miss');
+      result = 'Miss';
       squares[i] = 'M';
       playerOnesTurn = !playerOnesTurn;
     } else if ( /^p[12]S.$/.test(squares[i]) ) { // If there's a boat
       console.log('Hit!');
+      result = 'Hit';
       squares[i] = 'H';
       playerOnesTurn = !playerOnesTurn;
     } else {
@@ -157,8 +162,10 @@ class BattleShipt extends Component {
           playerOneSquares: current.playerOneSquares, // no change
           playerTwoSquares: squares,
           posX: Math.floor(i / 10) + 1, // input should be 0-10
-          posY: String.fromCharCode(i % 10 + 97), // output A->J
+          posY: String.fromCharCode(i % 10 + 65), // Int to Char
           winner: gameOver ? p : 0,
+          player: 1,
+          result: result,
         }]),
         stepNumber: this.state.stepNumber+1,
       });
@@ -170,8 +177,10 @@ class BattleShipt extends Component {
           playerOneSquares: squares,
           playerTwoSquares: current.playerTwoSquares, // no change
           posX: Math.floor(i / 10) + 1,
-          posY: String.fromCharCode(i % 10 + 97),
+          posY: String.fromCharCode(i % 10 + 65),
           winner: gameOver ? p : 0,
+          player: 2,
+          result: result,
         }]),
         stepNumber: this.state.stepNumber+1,
       });
@@ -189,7 +198,7 @@ class BattleShipt extends Component {
         <Sidebar
           // Check which player it is and display in sidebar
           player={this.state.playerIsOne ? 1 : 2}
-          lastPlayer={this.state.playerIsOne ? 2 : 1}
+          history={history}
           lastMoveX={current.posX}
           lastMoveY={current.posY}
           winner={winner}
