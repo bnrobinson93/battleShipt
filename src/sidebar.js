@@ -11,6 +11,8 @@ class Sidebar extends Component {
         <br />
         Last move:&nbsp;
         {this.props.lastMoveX ? lastMove : 'No moves yet'}
+        <br />
+        {(this.props.winner === 0) ? "" : 'Player '+this.props.winner+' won!'}
       </div>
     );
   }

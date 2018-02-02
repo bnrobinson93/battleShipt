@@ -2,6 +2,18 @@ import React, { Component } from 'react';
 import Grid from './grid.js'
 import Sidebar from './sidebar.js'
 
+// Check if the opponent's ships have all been sunk; if so, you win!
+function calculateWinner(squares) {
+  for ( var x in squares ) {
+    // If a ship pattern is found, there are still moves to be made
+    if ( /^p[12]S./.test(squares[x]) ) {
+      return false; // no winner yet
+    }
+  }
+  console.log('We have a winner! There were no floating ships found!')
+  return true; // current player is the winner
+}
+
 class BattleShipt extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +31,7 @@ class BattleShipt extends Component {
         playerTwoSquares: this.generateNShips(2, 2),
         posX: null,
         posY: null,
+        winner: 0,
       }],
       stepNumber: 0,
     }
@@ -133,7 +146,10 @@ class BattleShipt extends Component {
       alert("Please click a square in your top grid to fire.");
     }
 
-    if(p === 1) {
+    // Check if the game is won
+    let gameOver = calculateWinner(squares);
+
+    if ( p === 1 ) {
       //console.log('Updating p2 squares:'); for (var x in squares) {console.log(x+':'+squares[x]);}
       this.setState({
         playerIsOne: playerOnesTurn,
@@ -142,6 +158,7 @@ class BattleShipt extends Component {
           playerTwoSquares: squares,
           posX: Math.floor(i / 10) + 1, // input should be 0-10
           posY: String.fromCharCode(i % 10 + 97), // output A->J
+          winner: gameOver ? p : 0,
         }]),
         stepNumber: this.state.stepNumber+1,
       });
@@ -154,6 +171,7 @@ class BattleShipt extends Component {
           playerTwoSquares: current.playerTwoSquares, // no change
           posX: Math.floor(i / 10) + 1,
           posY: String.fromCharCode(i % 10 + 97),
+          winner: gameOver ? p : 0,
         }]),
         stepNumber: this.state.stepNumber+1,
       });
@@ -163,6 +181,8 @@ class BattleShipt extends Component {
   render() {
     const history = this.state.history;
     const current = history[history.length-1];
+    const winner = current.winner;
+    const gameOver = (winner === 0) ? false : true;
 
     return (
       <div className='row'>
@@ -172,6 +192,7 @@ class BattleShipt extends Component {
           lastPlayer={this.state.playerIsOne ? 2 : 1}
           lastMoveX={current.posX}
           lastMoveY={current.posY}
+          winner={winner}
         />
         <div className='container col s9'>
           <div className='section col s12 m12 l6 xl6'>
@@ -183,7 +204,7 @@ class BattleShipt extends Component {
                 <Grid
                  player={2}
                  onClick={this.handleClick.bind(this)} // Or arrow function
-                 clickable={this.state.playerIsOne ? true : false}
+                 clickable={this.state.playerIsOne ? !gameOver : false}
                  squares={current.playerTwoSquares}
                  shipsVisible={true}
                 />
@@ -207,7 +228,7 @@ class BattleShipt extends Component {
                 <Grid
                   player={1}
                   onClick={this.handleClick.bind(this)}
-                  clickable={this.state.playerIsOne ? false : true}
+                  clickable={this.state.playerIsOne ? false : !gameOver}
                   squares={current.playerOneSquares}
                   shipsVisible={true}
                 />
