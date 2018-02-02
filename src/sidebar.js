@@ -11,7 +11,8 @@ class Sidebar extends Component {
     const moves = history.map((step, move) => {
       var stat = move ? 'Player ' +
         history[move].player + ' attacked ' +
-        history[move].posY + history[move].posX : '';
+        history[move].posY + history[move].posX + '('
+        + history[move].result + ')' : '';
 
       if ( stat !== '' )
         return (
@@ -19,7 +20,7 @@ class Sidebar extends Component {
             <span>{stat}</span>
           </li>
         );
-      else return <br />
+      else return <br key={0}/>
     });
 
     return (

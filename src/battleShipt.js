@@ -14,6 +14,29 @@ function calculateWinner(squares) {
   return true; // current player is the winner
 }
 
+// Checks the number of ships still floating against the fleet size
+function shipsSunk(squares, expected) {
+  var ships = '';
+  for ( var x in squares ) {
+    if ( /^p[12]S./.test(squares[x]) ) {
+      // Store only the last charater, which is the ship number
+      ships += squares[x].substring(3) + ',';
+    }
+  }
+  console.log('Ships are still floating.')
+  if (ships.includes(',')) {
+    console.log(ships);
+    // Return the fleet size minus the unique ships that are still floating
+    const val = ships.split(',').filter(onlyUnique).length-1;
+    console.log('There are '+val+' unique ships floating');
+    return (val < expected);
+  }
+
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+}
+
 class BattleShipt extends Component {
   constructor(props) {
     super(props);
@@ -27,8 +50,10 @@ class BattleShipt extends Component {
     this.state = {
       playerIsOne: true,
       history: [{
-        playerOneSquares: this.generateNShips(2, 1),
-        playerTwoSquares: this.generateNShips(2, 2),
+        playerOneSquares: this.generateNShips(2, 1), // generate two ships for player one
+        playerTwoSquares: this.generateNShips(2, 2), // generate two ships for player two
+        playerOneShips: 2, // same as first input above
+        playerTwoShips: 2, // same as first input above
         posX: null,
         posY: null,
         winner: 0,
@@ -78,15 +103,15 @@ class BattleShipt extends Component {
       //  however, 21%10=1 which is less than the length, skip and go positive
       if ( shipDirection === 0 ) { // If horiizontal
         if ( ((shipStart) % 10) + len > 9 && ((shipStart) % 10) > len ) {
-        console.log('Going negative direction from '+shipStart);
+        //console.log('Going negative direction from '+shipStart);
           for (let i=0; i<len; i++) {
-            console.log('Marking '+(shipStart-i));
+            //console.log('Marking '+(shipStart-i));
             arr[shipStart - i] = 'p'+player+'S'+n;
           }
         } else {
-          console.log('Going positive direction from '+shipStart);
+          //console.log('Going positive direction from '+shipStart);
           for (let i=0; i<len; i++) {
-            console.log('Marking '+(shipStart+i))
+            //console.log('Marking '+(shipStart+i))
             arr[shipStart + i] = 'p'+player+'S'+n;
           }
         }
@@ -98,15 +123,15 @@ class BattleShipt extends Component {
         // Example 3, let shipStart be 6 and len be 2. 6+10*2=26<100
         //  so going in the positive direction is fine (else clause)
         if ( shipStart+(10*len) > 100 ) {
-          console.log('Going negative direction from '+shipStart);
+          //console.log('Going negative direction from '+shipStart);
           for (let i=0; i<len; i++) {
-            console.log('Marking '+(shipStart-(10*i)));
+            //console.log('Marking '+(shipStart-(10*i)));
             arr[shipStart - (10*i)] = 'p'+player+'S'+n;
           }
         } else {
-          console.log('Going positive direction from '+shipStart);
+          //console.log('Going positive direction from '+shipStart);
           for (let i=0; i<len; i++) {
-            console.log('Marking '+(shipStart+(10*i)));
+            //console.log('Marking '+(shipStart+(10*i)));
             arr[shipStart + (10*i)] = 'p'+player+'S'+n;
           }
         }
@@ -119,7 +144,7 @@ class BattleShipt extends Component {
   // i is the index in the player's grid
   handleClick(i) {
     const p = this.state.playerIsOne ? 1 : 2;
-    console.log('Player '+p+' clicked on '+i);
+    //console.log('Player '+p+' clicked on '+i);
 
     if ( (this.state.playerIsOne && p!==1) || (!this.state.playerIsOne && p!==2) ) {
       console.log('This grid is locked for player '+p)
@@ -130,6 +155,7 @@ class BattleShipt extends Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     var result = '';
+    var numShips = (p===1) ? current.playerOneShips : current.playerTwoShips;
 
     // If player is one, set to player two's squares and vice versa
     var playerOnesTurn = this.state.playerIsOne;
@@ -143,8 +169,14 @@ class BattleShipt extends Component {
       squares[i] = 'M';
       playerOnesTurn = !playerOnesTurn;
     } else if ( /^p[12]S.$/.test(squares[i]) ) { // If there's a boat
-      console.log('Hit!');
-      result = 'Hit';
+      if ( shipsSunk(squares, numShips) ) {
+        console.log('Sunk!');
+        result = 'Ship sunk';
+        numShips -= 1;
+      } else {
+        console.log('Hit!');
+        result = 'Hit';
+      }
       squares[i] = 'H';
       playerOnesTurn = !playerOnesTurn;
     } else {
@@ -161,6 +193,8 @@ class BattleShipt extends Component {
         history: history.concat([{
           playerOneSquares: current.playerOneSquares, // no change
           playerTwoSquares: squares,
+          playerOneShips: current.playerOneShips, // no change
+          playerTwoShips: numShips,
           posX: Math.floor(i / 10) + 1, // input should be 0-10
           posY: String.fromCharCode(i % 10 + 65), // Int to Char
           winner: gameOver ? p : 0,
@@ -176,6 +210,8 @@ class BattleShipt extends Component {
         history: history.concat([{
           playerOneSquares: squares,
           playerTwoSquares: current.playerTwoSquares, // no change
+          playerOneShips: numShips,
+          playerTwoShips: current.playerTwoShips, // no change
           posX: Math.floor(i / 10) + 1,
           posY: String.fromCharCode(i % 10 + 65),
           winner: gameOver ? p : 0,
