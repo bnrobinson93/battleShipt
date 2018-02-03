@@ -6,6 +6,8 @@ Clone the repository using
 
 This project uses `yarn` to run and requires Node (npm).
 
+Start by running `yarn start`
+
 ////// START OF DEFAULT README //////
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
