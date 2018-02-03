@@ -12,7 +12,7 @@ class Sidebar extends Component {
         + history[move].result + ')' : '';
 
       var lastMoveClasses = 'collection-item';
-      lastMoveClasses += (/won/.test(history[move].result)) ? ' teal accent-3' : '';
+      lastMoveClasses += (/won/.test(history[move].result)) ? ' teal lighten-1' : '';
 
       if (stat !== '') {
         return (
