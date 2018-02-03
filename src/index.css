@@ -44,14 +44,19 @@
   color: #ccc;
 }
 
+.hidden {
+  background: #fff;
+  color: #fff;
+}
+
 .hit {
   background: red;
-  color: red;
+  color: white;
 }
 
 .miss {
   background: blue;
-  color: blue;
+  color: white;
 }
 
 .square:hover {
@@ -69,4 +74,8 @@
 
 body {
   background-color: #fcfcfc;
+}
+
+.material-icons {
+  font-size: 22px;
 }

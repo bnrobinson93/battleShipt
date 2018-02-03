@@ -5,14 +5,17 @@ function Square(props) {
   if(!props.clickable) {
     styleVar += " unclickable";
   }
-  if(props.visible) {
-    if ( /^p[12]S./.test(props.value) ) {
-      styleVar += " ship";
-    } else if ( props.value === 'H' ) {
-      styleVar += " hit";
-    } else if ( props.value === 'M' ) {
-      styleVar += " miss";
-    }
+
+  var icon = "";
+
+  if ( /^p[12]S./.test(props.value) ) {
+    styleVar += " ship" + (props.visible ? "" : " hidden");
+  } else if ( props.value === 'H' ) {
+    styleVar += " hit"; // gps_fixed
+    icon = <i className="material-icons">gps_fixed</i>
+  } else if ( props.value === 'M' ) {
+    styleVar += " miss"; // gps_not_fixed
+    icon = <i className="material-icons">gps_not_fixed</i>
   }
 
   return (
@@ -21,7 +24,7 @@ function Square(props) {
   // props.visible is ued to hide the ship locations from non-owner
     <button className={styleVar}
       onClick={props.onClick} disabled={!props.clickable}>
-      {props.visible ? '' : null}
+      {icon}
     </button>
   );
 }
