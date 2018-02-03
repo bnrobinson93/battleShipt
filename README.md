@@ -2,7 +2,7 @@ This is a sample project, created in React to display competency in coding. The 
 
 ## Usage
 Clone the repository using
-`git clone https://github.com/bnrobinson93/battleShipt/`
+`git clone git@github.com:bnrobinson93/battleShipt.git`
 
 This project uses `yarn` to run and requires Node (npm).
 
