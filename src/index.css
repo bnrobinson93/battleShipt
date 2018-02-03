@@ -79,3 +79,11 @@ body {
 .material-icons {
   font-size: 22px;
 }
+
+/* Only show the last 7 items in the history to keep sidebar tidy */
+ul.collection li.collection-item {
+  display: none;
+}
+ul.collection li.collection-item:nth-last-of-type(-n+7) {
+  display: inherit;
+}
