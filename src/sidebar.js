@@ -41,7 +41,7 @@ class Sidebar extends Component {
           {lastMove}
         </ul>
         <ul className='collection with-header'>
-          <li className='collection-header'>Full history</li>
+          <li className='collection-header'>Last 6 moves</li>
           {moves}
           <li className='collection-item'>
             <button className='waves-effect waves-light btn'
