@@ -4,9 +4,6 @@ class Sidebar extends Component {
 
   render() {
     const history = this.props.history;
-    const lastPlayer = history[history.length-1].player;
-    const lastMove = 'Player ' + lastPlayer +
-    ' attacked ' + this.props.lastMoveY + this.props.lastMoveX;
 
     const moves = history.map((step, move) => {
       var stat = move ? 'Player ' +
@@ -14,17 +11,23 @@ class Sidebar extends Component {
         history[move].posY + history[move].posX + '('
         + history[move].result + ')' : '';
 
-      if ( stat !== '' )
+      var lastMoveClasses = "collection-item";
+      lastMoveClasses += (/won/.test(history[move].result)) ? " teal accent-3" : "";
+
+      if ( stat !== '' ) {
         return (
-          <li key={move} className="collection-item">
+          <li key={move} className={lastMoveClasses}>
             <span>{stat}</span>
           </li>
         );
-      else
+      } else {
         return (<li key={0} className="collection-item">
           <span>Game start</span>
           </li>);
+      }
     });
+
+    const lastMove = moves[moves.length-1];
 
     return (
       <div className='col s3'>
@@ -34,14 +37,11 @@ class Sidebar extends Component {
         </ul>
         <ul className="collection with-header">
           <li className="collection-header">Last move</li>
-          <li className="collection-item">
-            {this.props.lastMoveX ? lastMove : 'No moves yet'}
-          </li>
+          {this.props.lastMoveX ? lastMove : 'No moves yet'} 
         </ul>
-        {(this.props.winner === 0) ? "" : 'Player '+this.props.winner+' won!'}
         <ul className="collection with-header">
           <li className="collection-header">Full history</li>
-          <li className="collection-item">{moves}</li>
+          {moves}
           <li className="collection-item">
             <button className="waves-effect waves-light btn"
               onClick={this.props.onClick}>

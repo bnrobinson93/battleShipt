@@ -192,6 +192,7 @@ class BattleShipt extends Component {
 
     // Check if the game is won
     let gameOver = calculateWinner(squares);
+    gameOver && alert("Player "+p+" wins!") ;
 
     if ( p === 1 ) {
       //console.log('Updating p2 squares:'); for (var x in squares) {console.log(x+':'+squares[x]);}
