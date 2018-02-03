@@ -67,7 +67,6 @@
   outline: none;
 }
 
-.sidebar {
-  height: 100vh;
-  min-height: 100%;
+body {
+  background-color: #fcfcfc;
 }
