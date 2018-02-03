@@ -27,7 +27,8 @@ class Sidebar extends Component {
       }
     });
 
-    const lastMove = moves[moves.length-1];
+    const lastMove = this.props.lastMoveX ? moves[moves.length-1] :
+    <li className="collection-item">No Moves yet</li>;
 
     return (
       <div className='col s3'>
@@ -37,7 +38,7 @@ class Sidebar extends Component {
         </ul>
         <ul className="collection with-header">
           <li className="collection-header">Last move</li>
-          {this.props.lastMoveX ? lastMove : 'No moves yet'} 
+          {lastMove}
         </ul>
         <ul className="collection with-header">
           <li className="collection-header">Full history</li>
