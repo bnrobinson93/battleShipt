@@ -1,34 +1,36 @@
 import React, { Component } from 'react';
-import Grid from './grid.js'
-import Sidebar from './sidebar.js'
+import Grid from './grid.js';
+import Sidebar from './sidebar.js';
 
 // Check if the opponent's ships have all been sunk; if so, you win!
 function calculateWinner(squares) {
-  for ( var x in squares ) {
+  for (var x in squares) {
     // If a ship pattern is found, there are still moves to be made
-    if ( /^p[12]S./.test(squares[x]) ) {
+    if (/^p[12]S./.test(squares[x])) {
       return false; // no winner yet
     }
   }
-  console.log('We have a winner! There were no floating ships found!')
+
+  console.log('We have a winner! There were no floating ships found!');
   return true; // current player is the winner
 }
 
 // Checks the number of ships still floating against the fleet size
 function shipsSunk(squares, expected) {
   var ships = '';
-  for ( var x in squares ) {
-    if ( /^p[12]S./.test(squares[x]) ) {
+  for (var x in squares) {
+    if (/^p[12]S./.test(squares[x])) {
       // Store only the last charater, which is the ship number
       ships += squares[x].substring(3) + ',';
     }
   }
+
   //console.log('Ships are still floating.')
   if (ships.includes(',')) {
     //console.log(ships);
     // Return the fleet size minus the unique ships that are still floating
-    const val = ships.split(',').filter(onlyUnique).length-1;
-    console.log(val+' unique ship(s) floating. '+expected+ ' expected.');
+    const val = ships.split(',').filter(onlyUnique).length - 1;
+    console.log(val + ' unique ship(s) floating. ' + expected + ' expected.');
     return (val < expected);
   }
 
@@ -60,10 +62,11 @@ class BattleShipt extends Component {
         winner: 0,
         player: 1,
         result: null,
-      }],
+      },
+    ],
       stepNumber: 0,
     };
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -72,32 +75,35 @@ class BattleShipt extends Component {
 
   generateNShips(numShips, player) {
     var arr = new Array(100).fill(null);
-    for (let n=0; n<numShips; n++) {
+    for (let n = 0; n < numShips; n++) {
       // Randomly generate ships for player one and player
       var shipStart = Math.floor(Math.random() * 99); // between 0 and 99
       var shipDirection = Math.floor(Math.random() * 2); // between 0 and 1
       var len = Math.floor(Math.random() * 3) + 2; // between 2 and 5
 
       // Check if there's going to be an issue
-      if(shipDirection === 0) { // Horizontal
-        for (let i=shipStart-len; i<len; i++){
-          if(arr[i] != null) {
+      if (shipDirection === 0) { // Horizontal
+        for (let i = shipStart - len; i < len; i++) {
+          if (arr[i] != null) {
             shipDirection = 1;
-            console.log('There would be collision on '+i+'. Toggling direction.')
+            console.log('There would be collision on ' + i +
+            '. Toggling direction.');
             break;
           }
         }
       } else { // Vertical
-        for (let i=shipStart-(10*len); i<10*len; i+=10){
-          if(arr[i] != null) {
+        for (let i = shipStart - (10 * len); i < 10 * len; i += 10) {
+          if (arr[i] != null) {
             shipDirection = 0;
-            console.log('There would be collision on '+i+'. Toggling direction.')
+            console.log('There would be collision on ' + i +
+            '. Toggling direction.');
             break;
           }
         }
       }
 
-      console.log('Player '+player+' Ship '+n+' starts at: ' + shipStart +
+      console.log('Player ' + player + ' Ship ' + n +
+      ' starts at: ' + shipStart +
       ', shipDirection: ' + shipDirection +
       ', length: ' + len);
 
@@ -107,18 +113,18 @@ class BattleShipt extends Component {
       //  therefore, go the negative direction (46-50 instead of 50-54)
       // Example 3, let shipStart be 21 and length be 2. 21%10=1+2=3<9
       //  however, 21%10=1 which is less than the length, skip and go positive
-      if ( shipDirection === 0 ) { // If horiizontal
-        if ( ((shipStart) % 10) + len > 9 && ((shipStart) % 10) > len ) {
-        //console.log('Going negative direction from '+shipStart);
-          for (let i=0; i<len; i++) {
+      if (shipDirection === 0) { // If horiizontal
+        if (((shipStart) % 10) + len > 9 && ((shipStart) % 10) > len) {
+          //console.log('Going negative direction from '+shipStart);
+          for (let i = 0; i < len; i++) {
             //console.log('Marking '+(shipStart-i));
-            arr[shipStart - i] = 'p'+player+'S'+n;
+            arr[shipStart - i] = 'p' + player + 'S' + n;
           }
         } else {
           //console.log('Going positive direction from '+shipStart);
-          for (let i=0; i<len; i++) {
+          for (let i = 0; i < len; i++) {
             //console.log('Marking '+(shipStart+i))
-            arr[shipStart + i] = 'p'+player+'S'+n;
+            arr[shipStart + i] = 'p' + player + 'S' + n;
           }
         }
       } else { // If vertical
@@ -128,21 +134,22 @@ class BattleShipt extends Component {
         //  so going in the positive direction is fine (else clause)
         // Example 3, let shipStart be 6 and len be 2. 6+10*2=26<100
         //  so going in the positive direction is fine (else clause)
-        if ( shipStart+(10*len) > 100 ) {
+        if (shipStart + (10 * len) > 100) {
           //console.log('Going negative direction from '+shipStart);
-          for (let i=0; i<len; i++) {
+          for (let i = 0; i < len; i++) {
             //console.log('Marking '+(shipStart-(10*i)));
-            arr[shipStart - (10*i)] = 'p'+player+'S'+n;
+            arr[shipStart - (10 * i)] = 'p' + player + 'S' + n;
           }
         } else {
           //console.log('Going positive direction from '+shipStart);
-          for (let i=0; i<len; i++) {
+          for (let i = 0; i < len; i++) {
             //console.log('Marking '+(shipStart+(10*i)));
-            arr[shipStart + (10*i)] = 'p'+player+'S'+n;
+            arr[shipStart + (10 * i)] = 'p' + player + 'S' + n;
           }
         }
       }
     }
+
     // Update the player Array
     return arr;
   }
@@ -150,34 +157,39 @@ class BattleShipt extends Component {
   // i is the index in the player's grid
   handleClick(i) {
     const p = this.state.playerIsOne ? 1 : 2;
+
     //console.log('Player '+p+' clicked on '+i);
 
-    if ( (this.state.playerIsOne && p!==1) || (!this.state.playerIsOne && p!==2) ) {
-      console.log('This grid is locked for player '+p)
+    if ((this.state.playerIsOne && p !== 1) ||
+     (!this.state.playerIsOne && p !== 2)) {
+      console.log('This grid is locked for player ' + p);
+
       // If the player tries to click the opponent's grid, do nothing
-        return false;
+      return false;
     }
 
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     var result = '';
-    var numShips = (p===1) ? current.playerTwoShips : current.playerOneShips;
+    var numShips = (p === 1) ? current.playerTwoShips : current.playerOneShips;
+
     //console.log('Execting that player '+p+' has '+numShips+' ships.')
 
     // If player is one, set to player two's squares and vice versa
     var playerOnesTurn = this.state.playerIsOne;
-    var squares = (playerOnesTurn) ? current.playerTwoSquares.slice() : current.playerOneSquares.slice();
+    var squares = (playerOnesTurn) ? current.playerTwoSquares.slice() :
+     current.playerOneSquares.slice();
 
-    if ( squares[i] === 'H' || squares[i] === 'M') { // Check if already clicked
-      alert("That square has already been clicked!");
-    } else if ( squares[i] === null ) { // if empty
+    if (squares[i] === 'H' || squares[i] === 'M') { // Check if already clicked
+      alert('That square has already been clicked!');
+    } else if (squares[i] === null) { // if empty
       //console.log('Miss');
       result = 'Miss';
       squares[i] = 'M';
       playerOnesTurn = !playerOnesTurn;
-    } else if ( /^p[12]S.$/.test(squares[i]) ) { // If there's a boat
+    } else if (/^p[12]S.$/.test(squares[i])) { // If there's a boat
       squares[i] = 'H'; // Has to be updated before testing
-      if ( shipsSunk(squares, numShips) ) {
+      if (shipsSunk(squares, numShips)) {
         //console.log('Sunk!');
         result = 'Ship sunk';
         numShips -= 1;
@@ -185,16 +197,16 @@ class BattleShipt extends Component {
         //console.log('Hit!');
         result = 'Hit';
       }
+
       playerOnesTurn = !playerOnesTurn;
     } else {
-      alert("Please click a square in your top grid to fire.");
+      alert('Please click a square in your top grid to fire.');
     }
 
     // Check if the game is won
     let gameOver = calculateWinner(squares);
-    gameOver && alert("Player "+p+" wins!") ;
 
-    if ( p === 1 ) {
+    if (p === 1) {
       //console.log('Updating p2 squares:'); for (var x in squares) {console.log(x+':'+squares[x]);}
       this.setState({
         playerIsOne: playerOnesTurn,
@@ -207,9 +219,10 @@ class BattleShipt extends Component {
           posY: String.fromCharCode(i % 10 + 65), // Int to Char
           winner: gameOver ? p : 0,
           player: 1,
-          result: gameOver ? 'Player '+p+' won!' : result,
-        }]),
-        stepNumber: this.state.stepNumber+1,
+          result: gameOver ? 'Player ' + p + ' won!' : result,
+        },
+      ]),
+        stepNumber: this.state.stepNumber + 1,
       });
     } else {
       //console.log('Updating p1 squares:'); for (var x in squares) {console.log(x+':'+squares[x]);}
@@ -224,15 +237,18 @@ class BattleShipt extends Component {
           posY: String.fromCharCode(i % 10 + 65),
           winner: gameOver ? p : 0,
           player: 2,
-          result: gameOver ? 'Player '+p+' won!' : result,
-        }]),
-        stepNumber: this.state.stepNumber+1,
+          result: gameOver ? 'Player ' + p + ' won!' : result,
+        },
+      ]),
+        stepNumber: this.state.stepNumber + 1,
       });
     }
+
+    gameOver && alert('Player ' + p + ' wins!');
   }
 
   restartGame() {
-    if(window.confirm("Restart the game?")) {
+    if (window.confirm('Restart the game?')) {
       //alert('Restarting');
       this.setState(this.getInitialState());
     }
@@ -240,14 +256,13 @@ class BattleShipt extends Component {
 
   render() {
     const history = this.state.history;
-    const current = history[history.length-1];
+    const current = history[history.length - 1];
     const winner = current.winner;
     const gameOver = (winner === 0) ? false : true;
 
     return (
       <div className='row'>
-        <Sidebar
-          // Check which player it is and display in sidebar
+        <Sidebar // Check which player it is and display in sidebar
           player={this.state.playerIsOne ? 1 : 2}
           history={history}
           lastMoveX={current.posX}
@@ -257,9 +272,9 @@ class BattleShipt extends Component {
         />
         <div className='container col s9'>
           <div className='section col s12 m12 l6 xl6'>
-            <div className="col s12 center-align">
-              <div className="card blue lighten-5 text-darken-2">
-                <div className="card-title">
+            <div className='col s12 center-align'>
+              <div className='card blue lighten-5 text-darken-2'>
+                <div className='card-title'>
                   Player 1
                 </div>
                 <Grid
@@ -269,7 +284,7 @@ class BattleShipt extends Component {
                  squares={current.playerTwoSquares}
                  shipsVisible={false}
                 />
-                <div className="divider" />
+                <div className='divider' />
                 <Grid
                   player={1}
                   onClick={this.handleClick.bind(this)}
@@ -281,9 +296,9 @@ class BattleShipt extends Component {
             </div>
           </div>
           <div className='section col s12 m12 l6 xl6'>
-            <div className="col s12 center-align">
-              <div className="card blue lighten-5 text-darken-2">
-                <div className="card-title">
+            <div className='col s12 center-align'>
+              <div className='card blue lighten-5 text-darken-2'>
+                <div className='card-title'>
                   Player 2
                 </div>
                 <Grid
@@ -293,7 +308,7 @@ class BattleShipt extends Component {
                   squares={current.playerOneSquares}
                   shipsVisible={false}
                 />
-                <div className="divider" />
+                <div className='divider' />
                 <Grid
                   player={2}
                   onClick={this.handleClick.bind(this)}
@@ -306,7 +321,7 @@ class BattleShipt extends Component {
            </div>
         </div>
       </div>
-    );
+   );
   }
 
 }
