@@ -87,3 +87,7 @@ ul.collection li.collection-item {
 ul.collection li.collection-item:nth-last-of-type(-n+7) {
   display: inherit;
 }
+
+li.collection-item.teal {
+  color: #fff;
+}
